@@ -12,11 +12,24 @@ class TaskController extends Controller
      */
     public function assignTask(Request $request)
     {
-        return Task::create([
+        $request->validate([
+            'name' => 'required',
+            'status' => 'required',
+            'comments' => 'required',            
+        ]);
+        $task = Task::create([
             'name' => $request->input('name'),
             'status' => $request->input('status'),
             'comments' => $request->input('comments'),
             'user_id' => $request->input('user_id'),
+        ]);
+        if (! $task){
+            return response()->json([
+                'message'=> 'Failed to create a new Team'
+            ]);
+        }
+        return response()->json([
+            'message' => 'Task Created Successfully'
         ]);
     }
 
@@ -26,21 +39,23 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        return $tasks = Task::all();
+        return response()->json([
+            'message' => 'success',
+            'data' => Task::all(),
+        ]);
     }
 
 
     /**
      * Update the tasks.
      */
-    public function Update_task(Request $request, $id)
+    public function Update_task(Request $request)
     {
         $task = Task::find($request->id);
-
-        $task->name = $request['name'];
-        $task->status = $request['status'];
-        $task->comments = $request['comment'];
-        $task->user_id = $request['user_id'];
+        $task->name = empty($request->name) ? $task->name : $request->name;
+        $task->status = empty($request->status) ? $task->status : $request->status;
+        $task->comments = empty($request->comment) ? $task->comment : $request->comment;
+        $task->user_id = empty($request->user_id) ? $task->user_id : $request->user_id;
 
         $task->save();
 
@@ -53,11 +68,12 @@ class TaskController extends Controller
     /**
      * Re-assigning the tasks.
      */
-    public function reassign_task(Request $request, $id)
+    public function reassign_task(Request $request)
     {
+        $id = $request->id;
         $task = Task::find($id);
 
-        $task->user_id = $request['user_id'];
+        $task->user_id = $request->user_id;
         $task->save();
 
         return response()->json([
@@ -69,8 +85,9 @@ class TaskController extends Controller
     /**
      * Delete the task
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
         $task = Task::find($id);
         $task->delete();
 

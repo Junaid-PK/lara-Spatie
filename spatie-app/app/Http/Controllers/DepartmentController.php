@@ -8,35 +8,46 @@ use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {   
-    public function adding(Request $request)
+    public function addDepartment(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+        ]);
         return Department::create([
             'name'=>$request->input('name'),
-        ]) ;
+        ]);
     }
 
     // /**
-    //  * Summary of updating
+    //  * Summary of updateDepartment
     //  * @param \Illuminate\Http\Request $request
     //  * @return \Illuminate\Http\JsonResponse|mixed
     //  */
-    public function updating(Request $request,$id)
+    public function updateDepartment(Request $request)
     {
+        $id = $request->department_id;
         $items= Department::find($id);
         $items->name=$request->name;
         $items->update();
-        return response()->json('Department Updated Succesfully');
+        return response()->json([
+            'message' => 'Department Updated Successfully'
+        ]);
     }
 
-    public function delete(Request $request)
+    public function deleteDepartment(Request $request)
     {
-        $items= Department::findorfail($request->id)->delete();
+        $department_id = $request->department_id;
+        Department::findorfail($department_id)->delete();
         
-        return response()->json('Department deleted Succesfully');
+        return response()->json([
+            'message' =>'Department deleted Succesfully'
+        ]);
     }
-    public function getData()
+    public function getDepartments()
     {
         $items= Department::all();
-        return response()->json($items);
+        return response()->json([
+            'message' => $items
+        ]);
     }
 }

@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 
 use App\Models\Team;
-use Illuminate\Support\Facades\Validator;
 
 
 
@@ -14,107 +13,74 @@ use Illuminate\Support\Facades\Validator;
 
 class TeamController extends Controller
 {
-    // index: Get a list of all teams.
     public function index()
     {
+
         $teams = Team::all();
-        return response()->json(['data' => $teams]);
+        return response()->json([
+            'message' => 'Success',
+            'data' => $teams,
+        ]);
+
     }
-
-    // store: Create a new team.
-
-    // public function store(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'name' => 'required|string|max:255',
-    //         'Department_ID' => 'required|exists:departments,id',
-    //         'TeamLead_ID' => 'required|exists:users,id',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json(['error' => $validator->errors()], 400);
-    //     }
-
-    //     $team = Team::create($request->all());
-
-    //     return response()->json(['message' => 'Team created successfully', 'data' => $team], 201);
-    // }
 
 
     public function store(Request $request)
     {
-        return Team::create([
-            'name' => $request->input('name'),
-            'Department_ID' => $request->input('Department_ID'),
-            'TeamLead_ID' => $request->input('TeamLead_ID'),
+        $request->validate([
+            'name' => 'required',
         ]);
 
-        //return response()->json(['message' => 'Team created successfully', 'data' => $team], 201);
+        $team = Team::create([
+            'name' => $request->name,
+            'department_id' => $request->department_id,
+            'teamlead_id' => $request->teamlead_id,
+        ]);
+
+        if(! $team){
+            return response()->json([
+                'message' => 'Failed to create a new Team',
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Team Created Successfully',
+        ]);
     }
 
 
-    // show: Get a specific team by ID.
-
-    public function show($id)
+    public function show(Request $request)
     {
-        // return $Team=Team::all();
+        $id = $request->team_id;
         $team = Team::find($id);
-
-
         if (!$team) {
-            return response()->json(['error' => 'Team not found'], 404);
+            return response()->json([
+                'message' => 'Team not found'
+            ], 404);
         }
-
         return response()->json(['data' => $team]);
     }
 
-    // update: Update a team's information.
-
-    // public function update(Request $request, $id)
-    // {
-    //     $team = Team::find($id);
-
-    //     if (!$team) {
-    //         return response()->json(['error' => 'Team not found'], 404);
-    //     }
-
-    //     $validator = Validator::make($request->all(), [
-    //         'name' => 'required|string|max:255',
-    //         'Department_ID' => 'required|exists:departments,id',
-    //         'TeamLead_ID' => 'required|exists:users,id',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json(['error' => $validator->errors()], 400);
-    //     }
-
-    //     $team->update($request->all());
-
-    //     return response()->json(['message' => 'Team updated successfully', 'data' => $team]);
-    // }
 
     public function update(Request $request)
     {
-        $team = Team::find($request->id);
-
+        $id = $request->team_id;
+        $team = Team::find($id);
         if (!$team) {
             return response()->json(['error' => 'Team not found'], 404);
         }
-        
         $team->update([
-                'name' => $request->name,
-                'Department_ID' => $request->Department_ID,
-                'TeamLead_ID' => $request->TeamLead_ID,
+            'name' => empty($request->name) ? $team->name : $request->name,
+            'department_id' => empty($request->department_id) ? $team->department_id : $request->department_id,
+            'teamlead_id' => empty($request->teamlead_id) ? $team->teamlead_id : $request->teamlead_id,
         ]);
         return response()->json(['message' => 'Team updated successfully', 'data' => $team]);
-
     }
 
 
-    // destroy: Delete a team.
-
-    public function destroy($id)
+    public function destroy(Request $request)
     {
+        $id = $request->team_id;
         $team = Team::find($id);
 
         if (!$team) {

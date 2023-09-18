@@ -43,8 +43,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/teams', [TeamController::class, 'index'])->middleware('permission:can-view-teams');
     Route::post('/team/add', [TeamController::class, 'store'])->middleware('permission:can-create-teams');
     Route::get('/team/show', [TeamController::class, 'show'])->middleware('permission:can-view-specific-team');
-    Route::put('/team/update', [TeamController::class, 'update'])->middleware('permission:can-update-teams');
-    Route::delete('/team/delete', [TeamController::class, 'destroy'])->middleware('permission:can-delete-team');
+    Route::put('/team/update/{id}', [TeamController::class, 'update'])->middleware('permission:can-update-teams');
+    Route::delete('/team/delete/{id}', [TeamController::class, 'destroy'])->middleware('permission:can-delete-team');
 
 
 
@@ -59,7 +59,8 @@ Route::middleware('auth:sanctum')->group(function(){
 
     // Routes for DepartmentController
     Route::post('/department/add',[DepartmentController::class,'addDepartment'])->middleware('permission:can-add-department');
-    Route::put('/department/update',[DepartmentController::class,'updateDepartment'])->middleware('permission:can-update-department');
-    Route::delete('/department/delete',[DepartmentController::class,'deleteDepartment'])->middleware('permission:can-delete-department');
+    Route::put('/department/update/{id}',[DepartmentController::class,'updateDepartment'])->middleware('permission:can-update-department');
+    Route::delete('/department/delete/{id}',[DepartmentController::class,'deleteDepartment'])->middleware('permission:can-delete-department');
     Route::get('/departments',[DepartmentController::class,'getDepartments'])->middleware('permission:can-view-department');
+    Route::get('/department',[DepartmentController::class,'getDepartment'])->middleware('permission:can-view-department');
 });

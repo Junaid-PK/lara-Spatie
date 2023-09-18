@@ -23,9 +23,8 @@ class DepartmentController extends Controller
     //  * @param \Illuminate\Http\Request $request
     //  * @return \Illuminate\Http\JsonResponse|mixed
     //  */
-    public function updateDepartment(Request $request)
+    public function updateDepartment(Request $request, $id)
     {
-        $id = $request->department_id;
         $items= Department::find($id);
         $items->name=$request->name;
         $items->update();
@@ -34,11 +33,9 @@ class DepartmentController extends Controller
         ]);
     }
 
-    public function deleteDepartment(Request $request)
+    public function deleteDepartment(Request $request,$id)
     {
-        $department_id = $request->department_id;
-        Department::findorfail($department_id)->delete();
-        
+        Department::findorfail($id)->delete();
         return response()->json([
             'message' =>'Department deleted Succesfully'
         ]);
@@ -46,8 +43,12 @@ class DepartmentController extends Controller
     public function getDepartments()
     {
         $items= Department::all();
-        return response()->json([
-            'message' => $items
-        ]);
+        return $items;
+    }
+
+    public function getDepartment(Request $request)
+    {
+        $department = Department::find($request->department_id);
+        return $department;
     }
 }

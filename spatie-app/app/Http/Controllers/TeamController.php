@@ -17,11 +17,7 @@ class TeamController extends Controller
     {
 
         $teams = Team::all();
-        return response()->json([
-            'message' => 'Success',
-            'data' => $teams,
-        ]);
-
+        return $teams;
     }
 
 
@@ -62,9 +58,8 @@ class TeamController extends Controller
     }
 
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $id = $request->team_id;
         $team = Team::find($id);
         if (!$team) {
             return response()->json(['error' => 'Team not found'], 404);
@@ -78,9 +73,8 @@ class TeamController extends Controller
     }
 
 
-    public function destroy(Request $request)
+    public function destroy(Request $request,$id)
     {
-        $id = $request->team_id;
         $team = Team::find($id);
 
         if (!$team) {

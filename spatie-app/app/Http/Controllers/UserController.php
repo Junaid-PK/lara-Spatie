@@ -13,7 +13,7 @@ class UserController extends Controller
     */
     public function register(Request $request){
         $request->validate([
-            'name' => 'required|alpha',
+            'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
             'confirm_password' => 'required|same:password',

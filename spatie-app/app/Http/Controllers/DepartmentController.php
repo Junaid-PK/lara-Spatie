@@ -1,54 +1,45 @@
 <?php
 
- namespace App\Http\Controllers;
+namespace App\Http\Controllers;
 
+use App\Http\Requests\PostDepartmentRequest;
+use App\Http\Requests\UpdateDepartmentRequest;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use App\Services\DepartmentService;
+
 // use App\Http\Controllers\Controller;
 
 class DepartmentController extends Controller
-{   
-    public function addDepartment(Request $request)
+{
+    public function postDepartments(PostDepartmentRequest $request, DepartmentService $departmentService)
     {
-        $request->validate([
-            'name' => 'required',
-        ]);
-        return Department::create([
-            'name'=>$request->input('name'),
-        ]);
+
+        $validated = $request->validated();
+        $response = $departmentService->postDepartment($validated);
+        return $response;
+    }
+    public function getDepartments(DepartmentService $departmentService)
+    {
+        $response = $departmentService->getDepartment();
+        return $response;
+    }
+    public function showDepartments($id, DepartmentService $departmentService)
+    {
+        $response = $departmentService->showDepartment($id);
+        return $response;
     }
 
-    // /**
-    //  * Summary of updateDepartment
-    //  * @param \Illuminate\Http\Request $request
-    //  * @return \Illuminate\Http\JsonResponse|mixed
-    //  */
-    public function updateDepartment(Request $request, $id)
+    public function updateDepartments($id, UpdateDepartmentRequest $request, DepartmentService $departmentService)
     {
-        $items= Department::find($id);
-        $items->name=$request->name;
-        $items->update();
-        return response()->json([
-            'message' => 'Department Updated Successfully'
-        ]);
+        $validated = $request->validated();
+        $response = $departmentService->updateDepartment($id, $validated);
+        return $response;
     }
 
-    public function deleteDepartment(Request $request,$id)
+    public function deleteDepartments($id, DepartmentService $departmentService)
     {
-        Department::findorfail($id)->delete();
-        return response()->json([
-            'message' =>'Department deleted Succesfully'
-        ]);
-    }
-    public function getDepartments()
-    {
-        $items= Department::all();
-        return $items;
-    }
-
-    public function getDepartment(Request $request)
-    {
-        $department = Department::find($request->department_id);
-        return $department;
+        $response = $departmentService->deleteDepartment($id);
+        return $response;
     }
 }

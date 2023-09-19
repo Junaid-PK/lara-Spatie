@@ -2,95 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GetTaskRequest;
+use App\Http\Requests\PostTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
+use App\Http\Requests\ReassignTaskRequest;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use App\Services\TaskService;
+
 
 class TaskController extends Controller
 {
     /**
      * Creating Task
      */
-    public function assignTask(Request $request)
+    public function postTasks(PostTaskRequest $request, TaskService $taskService)
     {
-        $request->validate([
-            'name' => 'required',
-            'status' => 'required',
-            'comments' => 'required',            
-        ]);
-        $task = Task::create([
-            'name' => $request->input('name'),
-            'status' => $request->input('status'),
-            'comments' => $request->input('comments'),
-            'user_id' => $request->input('user_id'),
-        ]);
-        if (! $task){
-            return response()->json([
-                'message'=> 'Failed to create a new Team'
-            ]);
-        }
-        return response()->json([
-            'message' => 'Task Created Successfully'
-        ]);
+        $validated = $request->validated();
+        $response = $taskService->postTask($validated);
+        return $response;
     }
-
-
     /**
      * Display the tasks.
      */
-    public function show(Task $task)
+    public function getTasks(GetTaskRequest $request, TaskService $taskService)
     {
-        return response()->json([
-            'message' => 'success',
-            'data' => Task::all(),
-        ]);
+        $response = $taskService->getTask();
+        return $response;
+    }
+    public function showTasks($id, TaskService $taskService)
+    {
+        $response = $taskService->showTask($id);
+        return $response;
     }
 
 
-    /**
-     * Update the tasks.
-     */
-    public function Update_task(Request $request)
+
+    public function updateTasks($id, UpdateTaskRequest $request, TaskService $taskService)
     {
-        $task = Task::find($request->id);
-        $task->name = empty($request->name) ? $task->name : $request->name;
-        $task->status = empty($request->status) ? $task->status : $request->status;
-        $task->comments = empty($request->comment) ? $task->comment : $request->comment;
-        $task->user_id = empty($request->user_id) ? $task->user_id : $request->user_id;
 
-        $task->save();
+        $validated = $request->validated();
+        $response = $taskService->updateTask($id, $validated);
+        return $response;
 
-        return response()->json([
-            'message' => "Task Updated Successfully"
-        ]);
     }
-
 
     /**
      * Re-assigning the tasks.
      */
-    public function reassign_task(Request $request)
+    public function reassignTasks($id, ReassignTaskRequest $request, TaskService $taskService)
     {
-        $id = $request->id;
-        $task = Task::find($id);
-
-        $task->user_id = $request->user_id;
-        $task->save();
-
-        return response()->json([
-            'message' => "Task Re-Assigned Successfully"
-        ]);
+        $validated = $request->validated();
+        $response = $taskService->reassignTask($id, $validated);
+        return $response;
     }
 
 
     /**
      * Delete the task
      */
-    public function destroy(Request $request)
+    public function deleteTasks($id, TaskService $taskService)
     {
-        $id = $request->id;
-        $task = Task::find($id);
-        $task->delete();
-
-        return response()->json(['message' => 'Task Deleted Duccessfully']);
+        $response = $taskService->deleteTask($id);
+        return $response;
     }
 }

@@ -5,79 +5,56 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
-    /**
-     * Register User
-    */
-    public function register(Request $request){
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'confirm_password' => 'required|same:password',
-        ]);
-        $name = $request['name'];
-        $email = $request['email'];
-        $password = $request['password'];
-        $role = 'user';
+    public function registerUser(RegisterUserRequest $request, UserService $userService){
 
-        $user = User::create([
-            'name' => $name,
-            'email' => $email,
-            'password' => $password,
-            'role' => $role,
-        ]);        
-
-        if(! $user){
-            return response()->json([
-                'message' => 'Something went wrong',
-            ], 500);    
-        }
-        return response()->json([
-            'message' => 'Registeration Successfull',
-            'user' => $user,
-        ], 200);
+        $validate=$request->validated();
+        $response=$userService->register($validate);
+        return $response;
     }
 
-    /**
-     * Login User
-     */
-    public function login(Request $request)
+    public function loginUser(LoginUserRequest $request, UserService $userService)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-        ]);
-        $email = $request['email'];
-        $password = $request['password'];
-
-        // Authenticate
-        $user = User::where('email', $email)->first();
-        if (!$user || !Hash::check($password, $user->password)) {
-            return response()->json(['message' => 'Please Enter Valid Credentials'], 401);
-        }
-
-        $token = $user->createToken('token')->plainTextToken;
-        return response()->json([
-            'message' => 'Login Successfull',
-            'token' => $token,
-        ], 200); 
+        $validate=$request->validated();
+        $response=$userService->login($validate);
+        return $response;
     }
 
-    /**
-     * Logout the user
-     */
-    public function logout()
+    public function logoutUser(UserService $userService)
     {
-        auth()->user()->tokens()->delete();
-        return response()->json(['message' => 'Logout Successfull'],200);
+        $response = $userService->logout();
+        return $response;
     }
 
-    public function getUsers()
+    public function getUsers(UserService $userService)
     {
-        return User::all();
+        $response = $userService->show_all();
+        return $response;
+    }
+
+    public function getUser($id, UserService $userService)
+    {
+        $response = $userService->show($id);
+        return $response;
+    }
+
+    public function deleteUser($id, UserService $userService)
+    {
+        $response = $userService->delete($id);
+        return $response;
+    }
+
+    public function updateUser($id, UpdateUserRequest $request, UserService $userService)
+    {
+        $validate=$request->validated();
+        $response = $userService->update($id, $validate);
+        return $response;
     }
 
 }

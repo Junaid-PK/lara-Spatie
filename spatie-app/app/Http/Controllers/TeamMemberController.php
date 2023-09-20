@@ -15,7 +15,7 @@ class TeamMemberController extends Controller
         return $response;
     }
 
-    public function postTeam(CreateTeamMemberRequest $request, TeamMemberService $teamMemberService)
+    public function postTeamMembers(CreateTeamMemberRequest $request, TeamMemberService $teamMemberService)
     {
         $validate=$request->validated();
         $response=$teamMemberService->add($validate);

@@ -15,81 +15,43 @@ class TeamMemberService
             'user_id' => $data['user_id'],
         ]);
 
-        if(! $teamMember){
-            return response()->json([
-                'message' => 'Failed to add Team Member'
-            ]);
-        }
-        return response()->json([
-            'message' => 'Team Member added successfully'
-        ], 200);
+        return $teamMember;
+       
     }
 
     public function show_all()
     {
         $teamMembers = TeamMember::all();
-        return response()->json ([
-            'message' => "All Teams along with their members",
-            'data' => $teamMembers
-        ], 200);
+        return $teamMembers;
+       
     }
 
     public function showTeam($team_id)
     {
         $teamMember = TeamMember::where('team_id', $team_id)->get();
 
-        if (! $teamMember) {
-            return response()->json([
-                'message' => 'Team doest not exist'
-            ], 404);
-        }
-    
-        return response()->json([
-            'message' => 'Team Found',
-            'data' => $teamMember
-        ], 200);
+        return $teamMember;
+       
     }
 
-    public function update($user_id, array $data)
+    public function update($user_id,$team_id, array $data)
     {
-        $teamMember = TeamMember::where('user_id', $user_id)->first();
-
-        if(! $teamMember)
-        {
-            return response()->json([
-                'message' => 'User not found'
-            ], 404);
-        }
+        $teamMember = TeamMember::where([['team_id', $team_id],['user_id',$user_id]])->first();
         
         $teamMember->update([
             'user_id' => $data['user_id'],
             'team_id' => $data['team_id']
         ]);
-
-        return response()->json([
-            'message' => 'Team Member Successfully Updated',
-            'data' => $teamMember
-        ], 200);
-
+        return $teamMember;
+       
     }
 
-    public function delete($user_id)
+    public function delete($user_id,$team_id)
     {
-        $teamMember = TeamMember::where('user_id', $user_id)->first();
-
-        if(! $teamMember)
-        {
-            return response()->json([
-                'message' => 'User not found'
-            ], 404);
-        }
+        $teamMember = TeamMember::where([['team_id', $team_id],['user_id',$user_id]])->first();
+        $teamMember=$teamMember->delete();
+        return $teamMember;
         
-        $id = $teamMember->id;
-        TeamMember::where('id', $id)->delete();
-
-        return response()->json([
-            'message' => 'Team Member Successfully Deleted',
-        ], 200);
 
     }
 }

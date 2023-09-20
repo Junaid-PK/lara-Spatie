@@ -21,31 +21,22 @@ class TaskService
             'comments' => $comments,
             'user_id' => $user_id,
         ]);
-        if (!$task) {
-            return response()->json([
-                'message' => 'Failed to create a new Team'
-            ]);
-        }
-        return response()->json([
-            'message' => 'Task Created Successfully'
-        ]);
+        return $task;
+        
     }
 
     public function getTask()
     {
-        return response()->json([
-            'message' => 'success',
-            'data' => Task::all(),
-        ]);
+        $task=Task::all();
+        return $task;
+       
     }
     public function showTask($id)
     {
-        // Retrieve the task by ID or return a JSON response with a 404 status if not found
+        
         $task = Task::find($id);
-        if (!$task) {
-            return response()->json(['message' => 'Task not found'], 404);
-        }
-        return response()->json($task);
+        return $task;
+       
     }
 
     public function updateTask($id, array $data)
@@ -60,28 +51,26 @@ class TaskService
         $task->user_id = $data['user_id'];
 
         // Save the updated task
-        $task->save();
-
-        return response()->json([
-            'message' => "Task Updated Successfully"
-        ]);
+        $task=$task->save();
+return $task;
+       
     }
 
     public function reassignTask($id, array $data)
     {
         $task = Task::find($id);
         $task->user_id = $data['user_id'];
-        $task->save();
-        return response()->json([
-            'message' => "Task Re-Assigned Successfully"
-        ]);
+        $task=$task->save();
+        return $task;
+       
     }
 
     public function deleteTask($id)
     {
         $task = Task::find($id);
-        $task->delete();
-        return response()->json(['message' => 'Task Deleted Duccessfully']);
+        $task=$task->delete();
+        return $task;
+       
     }
 }
 ?>

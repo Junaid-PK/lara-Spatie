@@ -2,38 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TeamService;
 use Illuminate\Http\Request;
-
-
-use App\Models\Team;
-
-
-
-
+use App\Http\Requests\TeamRequest;
 
 class TeamController extends Controller
 {
-    public function index()
+    public function store(TeamRequest $request, TeamService $teamService)
     {
-
-        $teams = Team::all();
-        return $teams;
-    }
-
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-        ]);
-
-        $team = Team::create([
-            'name' => $request->name,
-            'department_id' => $request->department_id,
-            'teamlead_id' => $request->teamlead_id,
-        ]);
-
-        if(! $team){
+        $validatedData = $request->validated();
+        $team= $teamService->createTeam($validatedData);
+        if(!$team){
             return response()->json([
                 'message' => 'Failed to create a new Team',
             ]);
@@ -41,14 +20,23 @@ class TeamController extends Controller
 
         return response()->json([
             'message' => 'Team Created Successfully',
-        ]);
+        ],200);
     }
 
 
-    public function show(Request $request)
+    public function index(TeamService $teamService)
     {
-        $id = $request->team_id;
-        $team = Team::find($id);
+        $teams= $teamService->getTeam();
+        return response()->json([
+            'message' => 'success',
+            'data' => $teams,
+        ],200);
+       
+    }
+
+    public function show(Request $request, TeamService $teamService, $id)
+    {
+        $team= $teamService->showTeam($id);
         if (!$team) {
             return response()->json([
                 'message' => 'Team not found'
@@ -58,31 +46,26 @@ class TeamController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request, TeamService $teamService, $id)
     {
-        $team = Team::find($id);
+        //$validatedData = $request->validated();
+        $team= $teamService->updateTeam($id, $request);
         if (!$team) {
             return response()->json(['error' => 'Team not found'], 404);
+        }else{
+            return response()->json(['message' => 'Team updated successfully', 'data' => $team]);
         }
-        $team->update([
-            'name' => empty($request->name) ? $team->name : $request->name,
-            'department_id' => empty($request->department_id) ? $team->department_id : $request->department_id,
-            'teamlead_id' => empty($request->teamlead_id) ? $team->teamlead_id : $request->teamlead_id,
-        ]);
-        return response()->json(['message' => 'Team updated successfully', 'data' => $team]);
     }
 
 
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, TeamService $teamService, $id)
     {
-        $team = Team::find($id);
-
+        $team=$teamService->deleteTeam($id);
         if (!$team) {
             return response()->json(['error' => 'Team not found'], 404);
         }
-
-        $team->delete();
-
-        return response()->json(['message' => 'Team deleted successfully']);
+        else{
+            return response()->json(['message' => 'Team deleted successfully'],200);
+        }
     }
 }

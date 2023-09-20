@@ -44,7 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Routes for TeamController
     Route::get('/teams', [TeamController::class, 'index'])->middleware('permission:can-view-teams');
     Route::post('/team/add', [TeamController::class, 'store'])->middleware('permission:can-create-teams');
-    Route::get('/team/show', [TeamController::class, 'show'])->middleware('permission:can-view-specific-team');
+    Route::get('/team/show/{id}', [TeamController::class, 'show'])->middleware('permission:can-view-specific-team');
     Route::put('/team/update/{id}', [TeamController::class, 'update'])->middleware('permission:can-update-teams');
     Route::delete('/team/delete/{id}', [TeamController::class, 'destroy'])->middleware('permission:can-delete-team');
 
@@ -53,8 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Routes for TeamMemberController
     Route::get('/teammembers', [TeamMemberController::class, 'getAllTeamMembers'])->middleware('permission:can-view-members'); // Done
     Route::post('/teammembers', [TeamMemberController::class, 'postTeamMembers'])->middleware('permission:can-create-members'); // Done
-    Route::put('/teammembers/{user_id}', [TeamMemberController::class, 'updateTeamMember'])->middleware('permission:can-update-member'); // Done 
-    Route::delete('/teammembers/{user_id}', [TeamMemberController::class, 'deleteTeamMember'])->middleware('permission:can-update-member'); // Done
+    Route::put('/teammembers/{user_id}/{team_id}', [TeamMemberController::class, 'updateTeamMember'])->middleware('permission:can-update-member'); // Done 
+    Route::delete('/teammembers/{user_id}/{team_id}', [TeamMemberController::class, 'deleteTeamMember'])->middleware('permission:can-update-member'); // Done
     Route::get('/teammembers/{team_id}', [TeamMemberController::class, 'getTeamMember'])->middleware('permission:can-delete-member'); // Done
 
 

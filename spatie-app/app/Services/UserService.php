@@ -16,17 +16,8 @@ class UserService
             'password' => $data['password'],
             'role' => 'user',
         ]);    
-
-        if(! $user){
-            return response()->json([
-                'message' => 'Something went wrong',
-            ], 500);    
-        }
-
-        return response()->json([
-            'message' => 'Registeration Successfull',
-            'data' => $user,
-        ], 200);
+return $user;
+        
     }
 
     public function login(array $data)
@@ -38,12 +29,8 @@ class UserService
         if (!$user || !Hash::check($password, $user->password)) {
             return response()->json(['message' => 'Please Enter Valid Credentials'], 401);
         }
-
-        $token = $user->createToken('token')->plainTextToken;
-        return response()->json([
-            'message' => 'Login Successfull',
-            'data' => $token,
-        ], 200);
+return $user;
+        
     }
 
     public function logout()
@@ -55,62 +42,36 @@ class UserService
     public function show_all()
     {
         $user = User::all();
-        return response()->json([
-            'message' => 'All users Data',
-            'data' => $user,
-        ], 200);
+        return $user;
+        
     }
 
     public function show($id)
     {
         $user = User::find($id);
-        if(! $user)
-        {
-            return response()->json([
-                'message' => 'User not found',
-            ]);
-        }
-
-        return response()->json([
-            'message' => 'Found',
-            'data' => $user,
-        ], 200);
+         return $user;
     }
 
     public function delete($id)
     {
-        $user = User::find($id);
-        if(! $user)
-        {
-            return response()->json([
-                'message' => 'User not found',
-            ]);
-        }
+        
 
-        User::where('id', $id)->delete();
-        return response()->json([
-            'message' => 'Successfully Deleted',
-        ], 200);
+        $user=User::where('id', $id)->delete();
+        return $user;
+
+       
     }
 
     public function update($id, array $data)
     {
         $user = User::find($id);
-        if(! $user)
-        {
-            return response()->json([
-                'message' => 'User not found',
-            ]);
-        }
-
-        $user->update([
+       
+        $user=$user->update([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => $data['password']
         ]);
-
-        return response()->json([
-            'message' => "User Updated"
-        ]);
+        return $user;
+       
     }
 }

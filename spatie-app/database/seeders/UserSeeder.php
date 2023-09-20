@@ -22,9 +22,9 @@ class UserSeeder extends Seeder
         $user->givePermissionTo('can-delete-task');
         $user->givePermissionTo('can-update-task');
         $user->givePermissionTo('can-reassign-task');
-        $user->givePermissionTo('can-view-teams');
-        $user->givePermissionTo('can-create-teams');
-        $user->givePermissionTo('can-update-teams');
+        $user->givePermissionTo('can-view-team');
+        $user->givePermissionTo('can-create-team');
+        $user->givePermissionTo('can-update-team');
         $user->givePermissionTo('can-view-specific-team');
         $user->givePermissionTo('can-delete-team');
         $user->givePermissionTo('can-view-members');

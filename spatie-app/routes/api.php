@@ -24,7 +24,6 @@ Route::post('/users/login', [UserController::class, 'loginUser']); // Done
 
 
 
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/logout', [UserController::class, 'logoutUser']); // Done
     Route::get('/users', [UserController::class, 'getUsers'])->middleware('permission:can-access-all-users'); // Done

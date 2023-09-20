@@ -19,24 +19,27 @@ use App\Http\Controllers\TeamMemberController;
 */
 
 
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/register', [UserController::class, 'register']);
+Route::post('/users/register', [UserController::class, 'registerUser']); // Done
+Route::post('/users/login', [UserController::class, 'loginUser']); // Done
 
 
 
 
-Route::middleware('auth:sanctum')->group(function(){
-    Route::post('/logout', [UserController::class, 'logout']);
-    Route::get('/users', [UserController::class, 'getUsers'])->middleware('permission:can-access-all-users');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/users/logout', [UserController::class, 'logoutUser']); // Done
+    Route::get('/users', [UserController::class, 'getUsers'])->middleware('permission:can-access-all-users'); // Done
+    Route::get('/users/{id}', [UserController::class, 'getUser'])->middleware('permission:can-access-all-users'); // Done 
+    Route::delete('/users/{id}', [UserController::class, 'deleteUser'])->middleware('permission:can-access-all-users'); // Done 
+    Route::put('/users/{id}', [UserController::class, 'updateUser'])->middleware('permission:can-access-all-users'); // Done
 
 
     // Route for TaskController
-    Route::post('/task/create', [TaskController::class, 'assignTask'])->middleware('permission:can-create-task');
-    Route::post('/task/show', [TaskController::class, 'show'])->middleware('permission:can-view-task');
-    Route::delete('/task/delete', [TaskController::class, 'destroy'])->middleware('permission:can-delete-task');
-    Route::put('/task/update', [TaskController::class, 'Update_task'])->middleware('permission:can-update-task'); // for updating complete start
-    Route::put('/task/reassign', [TaskController::class, 'reassign_task'])->middleware('permission:can-reassign-task'); // for reassigning the task
-
+    Route::post('/tasks', [TaskController::class, 'postTasks'])->middleware('permission:can-create-task');
+    Route::get('/tasks', [TaskController::class, 'getTasks'])->middleware('permission:can-view-task');
+    Route::get('/tasks/{id}', [TaskController::class, 'showTasks'])->middleware('permission:can-view-task');
+    Route::delete('/tasks/{id}', [TaskController::class, 'deleteTasks'])->middleware('permission:can-delete-task');
+    Route::put('/tasks/{id}', [TaskController::class, 'updateTasks'])->middleware('permission:can-update-task'); // for updating complete start
+    Route::put('/tasks/reassign/{id}', [TaskController::class, 'reassignTasks'])->middleware('permission:can-reassign-task'); // for reassigning the task
 
 
     // Routes for TeamController
@@ -49,18 +52,18 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
     // Routes for TeamMemberController
-    Route::get('/members', [TeamMemberController::class, 'index'])->middleware('permission:can-view-members');
-    Route::post('/member/add', [TeamMemberController::class, 'store'])->middleware('permission:can-create-members');
-    Route::get('/member/show', [TeamMemberController::class, 'show'])->middleware('permission:can-view-specific-member');
-    Route::put('/member/update', [TeamMemberController::class, 'update'])->middleware('permission:can-update-member');
-    Route::delete('/member/delete', [TeamMemberController::class, 'destroy'])->middleware('permission:can-delete-member');
+    Route::get('/teammembers', [TeamMemberController::class, 'getAllTeamMembers'])->middleware('permission:can-view-members'); // Done
+    Route::post('/teammembers', [TeamMemberController::class, 'postTeamMembers'])->middleware('permission:can-create-members'); // Done
+    Route::put('/teammembers/{user_id}', [TeamMemberController::class, 'updateTeamMember'])->middleware('permission:can-update-member'); // Done 
+    Route::delete('/teammembers/{user_id}', [TeamMemberController::class, 'deleteTeamMember'])->middleware('permission:can-update-member'); // Done
+    Route::get('/teammembers/{team_id}', [TeamMemberController::class, 'getTeamMember'])->middleware('permission:can-delete-member'); // Done
 
 
 
     // Routes for DepartmentController
-    Route::post('/department/add',[DepartmentController::class,'addDepartment'])->middleware('permission:can-add-department');
-    Route::put('/department/update/{id}',[DepartmentController::class,'updateDepartment'])->middleware('permission:can-update-department');
-    Route::delete('/department/delete/{id}',[DepartmentController::class,'deleteDepartment'])->middleware('permission:can-delete-department');
-    Route::get('/departments',[DepartmentController::class,'getDepartments'])->middleware('permission:can-view-department');
-    Route::get('/department',[DepartmentController::class,'getDepartment'])->middleware('permission:can-view-department');
+    Route::post('/departments', [DepartmentController::class, 'postDepartments'])->middleware('permission:can-add-department');
+    Route::put('/departments/{id}', [DepartmentController::class, 'updateDepartments'])->middleware('permission:can-update-department');
+    Route::delete('/departments/{id}', [DepartmentController::class, 'deleteDepartments'])->middleware('permission:can-delete-department');
+    Route::get('/departments', [DepartmentController::class, 'getDepartments'])->middleware('permission:can-view-department');
+    Route::get('/departments/{id}', [DepartmentController::class, 'showDepartments'])->middleware('permission:can-view-department');
 });

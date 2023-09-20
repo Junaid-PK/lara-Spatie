@@ -16,8 +16,15 @@ class DepartmentController extends Controller
     {
 
         $validated = $request->validated();
-        $response = $departmentService->postDepartment($validated);
-        return $response;
+        $department = $departmentService->postDepartment($validated);
+        if (!$department) {
+            return response()->json([
+                'message' => 'Failed to create a new Department'
+            ]);
+        }
+        return response()->json([
+            'message' => 'Department Created Successfully'
+        ],200);
     }
     public function getDepartments(DepartmentService $departmentService)
     {
@@ -26,20 +33,30 @@ class DepartmentController extends Controller
     }
     public function showDepartments($id, DepartmentService $departmentService)
     {
-        $response = $departmentService->showDepartment($id);
-        return $response;
+        $department = $departmentService->showDepartment($id);
+        if (!$department) {
+            return response()->json(['message' => 'Department not found'], 404);
+        }
+        return response()->json($department);
     }
-
     public function updateDepartments($id, UpdateDepartmentRequest $request, DepartmentService $departmentService)
     {
         $validated = $request->validated();
-        $response = $departmentService->updateDepartment($id, $validated);
-        return $response;
+        $department= $departmentService->updateDepartment($id, $validated);
+        if (!$department) {
+            return response()->json(['message' => 'Department not found'], 404);
+        }
+        return response()->json([
+            'message' => "Department Updated Successfully"
+        ]);
     }
 
     public function deleteDepartments($id, DepartmentService $departmentService)
     {
-        $response = $departmentService->deleteDepartment($id);
-        return $response;
+        $department = $departmentService->deleteDepartment($id);
+        if (!$department) {
+            return response()->json(['message' => 'Department not found'], 404);
+        }
+        return response()->json(['message' => 'Department Deleted Duccessfully']);
     }
 }

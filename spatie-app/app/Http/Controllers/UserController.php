@@ -15,15 +15,28 @@ class UserController extends Controller
     public function registerUser(RegisterUserRequest $request, UserService $userService){
 
         $validate=$request->validated();
-        $response=$userService->register($validate);
-        return $response;
+        $user=$userService->register($validate);
+        if(! $user){
+            return response()->json([
+                'message' => 'Something went wrong',
+            ], 500);    
+        }
+
+        return response()->json([
+            'message' => 'Registeration Successfull',
+            'data' => $user,
+        ], 200);
     }
 
     public function loginUser(LoginUserRequest $request, UserService $userService)
     {
         $validate=$request->validated();
-        $response=$userService->login($validate);
-        return $response;
+        $user=$userService->login($validate);
+        $token = $user->createToken('token')->plainTextToken;
+        return response()->json([
+            'message' => 'Login Successfull',
+            'data' => $token,
+        ], 200);
     }
 
     public function logoutUser(UserService $userService)
@@ -34,27 +47,61 @@ class UserController extends Controller
 
     public function getUsers(UserService $userService)
     {
-        $response = $userService->show_all();
-        return $response;
+        $user = $userService->show_all();
+        return response()->json([
+            'message' => 'All users Data',
+            'data' => $user,
+        ], 200);
     }
 
     public function getUser($id, UserService $userService)
     {
-        $response = $userService->show($id);
-        return $response;
+        $user = $userService->show($id);
+       
+        if(! $user)
+        {
+            return response()->json([
+                'message' => 'User not found',
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Found',
+            'data' => $user,
+        ], 200);
     }
 
     public function deleteUser($id, UserService $userService)
     {
-        $response = $userService->delete($id);
-        return $response;
+        $user = $userService->delete($id);
+        if($user){
+            return response()->json([
+                'message' => 'Successfully Deleted',
+            ], 200);
+        }
+        else{
+            return response()->json([
+                'message' => 'User not found',
+            ], 404);
+        }
+        
     }
 
     public function updateUser($id, UpdateUserRequest $request, UserService $userService)
     {
         $validate=$request->validated();
-        $response = $userService->update($id, $validate);
-        return $response;
+        $user = $userService->update($id, $validate);
+        if($user){
+            return response()->json([
+                'message' => "User Updated"
+            ],200);
+        }
+        else{
+            return response()->json([
+                'message' => 'User not found',
+            ], 404);
+        }
+       
     }
 
 }

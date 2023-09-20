@@ -11,33 +11,74 @@ class TeamMemberController extends Controller
 
     public function getAllTeamMembers(TeamMemberService $teamMemberService)
     {
-        $response=$teamMemberService->show_all();
-        return $response;
+        $teamMembers=$teamMemberService->show_all();
+        return response()->json ([
+            'message' => "All Teams along with their members",
+            'data' => $teamMembers
+        ], 200);
     }
 
     public function postTeamMembers(CreateTeamMemberRequest $request, TeamMemberService $teamMemberService)
     {
         $validate=$request->validated();
-        $response=$teamMemberService->add($validate);
-        return $response;
+        $teamMember=$teamMemberService->add($validate);
+        if(! $teamMember){
+            return response()->json([
+                'message' => 'Failed to add Team Member'
+            ]);
+        }
+        return response()->json([
+            'message' => 'Team Member added successfully'
+        ], 200);
     }
 
     public function getTeamMember($team_id, TeamMemberService $teamMemberService)
     {
-        $response=$teamMemberService->showTeam($team_id);
-        return $response;
+        $teamMember=$teamMemberService->showTeam($team_id);
+        if (! $teamMember) {
+            return response()->json([
+                'message' => 'Team doest not exist'
+            ], 404);
+        }
+    
+        return response()->json([
+            'message' => 'Team Found',
+            'data' => $teamMember
+        ], 200);
     }
 
-    public function updateTeamMember($user_id, CreateTeamMemberRequest $request, TeamMemberService $teamMemberService)
+    public function updateTeamMember($user_id,$team_id, CreateTeamMemberRequest $request, TeamMemberService $teamMemberService)
     {
         $validate=$request->validated();
-        $response=$teamMemberService->update($user_id, $validate);
-        return $response;
+        $teamMember=$teamMemberService->update($user_id,$team_id, $validate);
+        if(!$teamMember)
+        {
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Team Member Successfully Updated',
+            'data' => $teamMember
+        ], 200);
+
     }
 
-    public function deleteTeamMember($user_id, TeamMemberService $teamMemberService)
+    public function deleteTeamMember($user_id,$team_id, TeamMemberService $teamMemberService)
     {
-        $response=$teamMemberService->delete($user_id);
-        return $response;
+        $teamMember=$teamMemberService->delete($user_id,$team_id);
+        if(! $teamMember)
+        {
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Team Member Successfully Deleted',
+        ], 200);
+        
+        // $id = $teamMember->id;
+        // TeamMember::where('id', $id)->delete();
+
     }
 }

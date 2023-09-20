@@ -14,4 +14,10 @@ class Permission extends Model
 		'name',
 		'guard_name',
 	];
+
+	// users
+	public function users()
+	{
+		return $this->belongsToMany(User::class);
+	}
 }

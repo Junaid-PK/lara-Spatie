@@ -43,7 +43,7 @@ class MessageController extends Controller
 			], 404);
 		}
 
-		$rawQuery = 'SELECT m.id, m.message, m.teammember_id, m.created_at FROM messages m WHERE m.teammember_id IN (SELECT tm.id FROM teammembers tm WHERE tm.team_id = ' . $validated['team_id'] . ')';
+		$rawQuery = 'SELECT m.id, m.message, m.teammember_id, m.created_at FROM messages m JOIN teammembers tm on m.teammember_id = tm.id WHERE tm.team_id = ' . $validated['team_id'];
 		if (isset($validated['last_message_id'])) {
 			$rawQuery .= ' AND m.id < ' . $validated['last_message_id'];
 		}

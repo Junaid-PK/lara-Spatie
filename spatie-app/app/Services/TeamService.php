@@ -45,11 +45,10 @@ class TeamService
 	public function updateTeam($id, $data)
 	{
 		$team = Team::find($id);
-
 		$team = $team->update([
-			'name' => ($data['name']) ? $data['name'] : $team->name,
-			'department_id' => ($data['department_id']) ? $team->department_id : $data['department_id'],
-			'teamlead_id' => ($data['teamlead_id']) ? $team->teamlead_id : $data['teamlead_id'],
+			'name' => $data['name'],
+			'department_id' => $data['department_id'],
+			'teamlead_id' => $data['teamlead_id'],
 		]);
 		return $team;
 	}

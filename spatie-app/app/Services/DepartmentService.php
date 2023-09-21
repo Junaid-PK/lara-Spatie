@@ -11,7 +11,6 @@ class DepartmentService
     public function postDepartment(array $data)
     {
         $name = $data['name'];
-
         $department = Department::create([
             'name' => $name,
         ]);
@@ -36,7 +35,6 @@ class DepartmentService
     {
         $department = Department::find($id);
         $department->name = $data['name'];
-
         // Save the updated department
         $department=$department->save();
        return $department;

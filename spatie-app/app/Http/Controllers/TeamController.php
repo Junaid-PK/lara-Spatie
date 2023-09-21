@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TeamMember;
 use App\Services\TeamService;
 use Illuminate\Http\Request;
 use App\Http\Requests\TeamRequest;
+use Illuminate\Support\Facades\Auth;
 
 class TeamController extends Controller
 {
@@ -27,6 +29,17 @@ class TeamController extends Controller
     public function index(TeamService $teamService)
     {
         $teams= $teamService->getTeam();
+        return response()->json([
+            'message' => 'success',
+            'data' => $teams,
+        ],200);
+       
+    }
+    public function getUserTeams(TeamService $teamService)
+    {
+        $teams= $teamService->userTeams();
+        
+      
         return response()->json([
             'message' => 'success',
             'data' => $teams,

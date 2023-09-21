@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Team;
+use App\Models\TeamMember;
+use Illuminate\Support\Facades\Auth;
 
 class TeamService
 {
@@ -26,27 +28,18 @@ class TeamService
 		$teams = Team::all();
 		return $teams;
 	}
+	public function userTeams()
+	{
+		$user = Auth::user();
+
+		$teams = TeamMember::with('team')->where('user_id', $user->id)->get();
+		return $teams;
+	}
 	public function showTeam($id)
 	{
 		$team = Team::find($id);
 		return $team;
 	}
-
-
-	// public function updateTeam($id, $data)
-	// {
-	//     $team = Team::find($id);
-	//     if (!$team) {
-	//         return response()->json(['error' => 'Team not found'], 404);
-	//     }
-	//     $team->update
-	//     ([
-	//         'name' => empty($data->name) ? $team->name : $data->name,
-	//         'department_id' => empty($data->department_id) ? $team->department_id : $data->department_id,
-	//         'teamlead_id' => empty($data->teamlead_id) ? $team->teamlead_id : $data->teamlead_id,
-	//     ]);
-	//     return response()->json(['message' => 'Team updated successfully', 'data' => $team]);
-	// }
 
 
 	public function updateTeam($id, $data)
@@ -69,10 +62,5 @@ class TeamService
 		return $team;
 	}
 
-	// get user teams
-	public function getUserTeams($user_id)
-	{
-		$teams = Team::where('teamlead_id', $user_id)->get();
-		return $teams;
-	}
+
 }

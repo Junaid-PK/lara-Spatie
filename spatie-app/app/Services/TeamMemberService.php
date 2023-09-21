@@ -18,12 +18,6 @@ class TeamMemberService
 		return $teamMember;
 	}
 
-	public function show_all()
-	{
-		$teamMembers = TeamMember::all();
-		return $teamMembers;
-	}
-
 	public function showTeam($team_id)
 	{
 		$teamMember = TeamMember::where('team_id', $team_id)->get();
@@ -31,19 +25,18 @@ class TeamMemberService
 		return $teamMember;
 	}
 
-	public function update($user_id, $team_id, array $data)
+	public function update($id, $data)
 	{
-		$teamMember = TeamMember::where([['team_id', $team_id], ['user_id', $user_id]])->first();
-
+		$teamMember = TeamMember::find($id);
 		$teamMember->update([
 			'user_id' => $data['user_id'],
 			'team_id' => $data['team_id']
 		]);
 		return $teamMember;
 	}
-	public function delete($user_id, $team_id)
+	public function delete($id)
 	{
-		$teamMember = TeamMember::where([['team_id', $team_id], ['user_id', $user_id]])->first();
+		$teamMember = TeamMember::find($id);
 		$teamMember = $teamMember->delete();
 		return $teamMember;
 	}

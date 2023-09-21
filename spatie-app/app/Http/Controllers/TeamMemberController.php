@@ -9,15 +9,6 @@ use App\Services\TeamMemberService;
 class TeamMemberController extends Controller
 {
 
-    public function getAllTeamMembers(TeamMemberService $teamMemberService)
-    {
-        $teamMembers=$teamMemberService->show_all();
-        return response()->json ([
-            'message' => "All Teams along with their members",
-            'data' => $teamMembers
-        ], 200);
-    }
-
     public function postTeamMembers(CreateTeamMemberRequest $request, TeamMemberService $teamMemberService)
     {
         $validate=$request->validated();
@@ -47,10 +38,10 @@ class TeamMemberController extends Controller
         ], 200);
     }
 
-    public function updateTeamMember($user_id,$team_id, CreateTeamMemberRequest $request, TeamMemberService $teamMemberService)
+    public function updateTeamMember($id, CreateTeamMemberRequest $request, TeamMemberService $teamMemberService)
     {
-        $validate=$request->validated();
-        $teamMember=$teamMemberService->update($user_id,$team_id, $validate);
+        $data=$request->validated();
+        $teamMember=$teamMemberService->update($id, $data);
         if(!$teamMember)
         {
             return response()->json([
@@ -64,9 +55,9 @@ class TeamMemberController extends Controller
 
     }
 
-    public function deleteTeamMember($user_id,$team_id, TeamMemberService $teamMemberService)
+    public function deleteTeamMember($id, TeamMemberService $teamMemberService)
     {
-        $teamMember=$teamMemberService->delete($user_id,$team_id);
+        $teamMember=$teamMemberService->delete($id);
         if(! $teamMember)
         {
             return response()->json([
@@ -76,9 +67,5 @@ class TeamMemberController extends Controller
         return response()->json([
             'message' => 'Team Member Successfully Deleted',
         ], 200);
-        
-        // $id = $teamMember->id;
-        // TeamMember::where('id', $id)->delete();
-
     }
 }

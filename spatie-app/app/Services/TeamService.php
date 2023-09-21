@@ -25,13 +25,13 @@ class TeamService
 
 	public function getTeam()
 	{
-		$teams = Team::paginate(15);
+		$teams = Team::with('teammember')->paginate(15);
 		return $teams;
 	}
+
 	public function userTeams()
 	{
 		$user = Auth::user();
-
 		$teams = TeamMember::with('team')->where('user_id', $user->id)->get();
 		return $teams;
 	}

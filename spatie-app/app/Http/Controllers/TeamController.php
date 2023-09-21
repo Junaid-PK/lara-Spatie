@@ -20,7 +20,6 @@ class TeamController extends Controller
                 'message' => 'Failed to create a new Team',
             ]);
         }
-
         return response()->json([
             'message' => 'Team Created Successfully',
             'data' => $team
@@ -35,7 +34,6 @@ class TeamController extends Controller
             'message' => 'success',
             'data' => $teams,
         ],200);
-       
     }
     public function getUserTeams(TeamService $teamService)
     {

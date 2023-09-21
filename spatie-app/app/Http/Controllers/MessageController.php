@@ -3,31 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageEvent;
+use App\Http\Requests\Message\PostMessageRequest;
 use App\Models\Message;
 use App\Models\Team;
 use App\Models\TeamMember;
 use App\Models\User;
+use App\Services\MessageService;
+use App\Services\TeamMemberService;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
 	// postMessage
-	public function postMessage(Request $request)
+	public function postMessage(PostMessageRequest $request, MessageService $messageService, TeamMemberService $teamMemberService)
 	{
-		$message = $request->input('message');
-		$teammember_id = $request->input('teammember_id');
+		$validated = $request->validated();
+		$teamMember = $teamMemberService->getTeamMember($validated['teammember_id']);
+		if (!$teamMember) {
+			return response()->json([
+				'message' => 'Team Member not found'
+			], 404);
+		}
+		$message = $messageService->postMessage($validated);
 
-		$message = Message::create([
-			'message' => $message,
-			'teammember_id' => $teammember_id,
-		]);
+		broadcast(new MessageEvent($message, $teamMember,))->toOthers();
+		return ['status' => 'Message Sent Successfully'];
+	}
 
-
-		// get name of the user whose teammember_id is $teammember_id
-		$teammember = TeamMember::where('id', $teammember_id)->first();
-
-		broadcast(new MessageEvent($message, $teammember,))->toOthers();
-
-		return ['status' => 'Message Sent!'];
+	public function getMessages()
+	{
+		// 
 	}
 }

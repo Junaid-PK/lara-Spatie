@@ -32,11 +32,13 @@ class MessageEvent implements ShouldBroadcast
 	 */
 	public function broadcastOn()
 	{
+		// private-team.6
 		return new PrivateChannel('team.' . $this->teammember->team_id);
 	}
 
 	public function broadcastAs()
 	{
+		// team.message.sent
 		return MessageConstant::TEAM_MESSAGE_SENT_EVENT;
 	}
 }

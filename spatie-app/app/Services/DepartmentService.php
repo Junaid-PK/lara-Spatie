@@ -22,7 +22,7 @@ class DepartmentService
 
     public function getDepartment()
     {
-        $departments = Department::all();
+        $departments = Department::paginate(15);
         return $departments;
     }
     public function showDepartment($id)

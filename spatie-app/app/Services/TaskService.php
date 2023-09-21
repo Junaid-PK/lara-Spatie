@@ -27,7 +27,7 @@ class TaskService
 
     public function getTask()
     {
-        $task=Task::all();
+        $task=Task::paginate(15);
         return $task;
        
     }

@@ -23,7 +23,7 @@ class TeamService
 
 	public function getTeam()
 	{
-		$teams = Team::all();
+		$teams = Team::paginate(15);
 		return $teams;
 	}
 	public function showTeam($id)

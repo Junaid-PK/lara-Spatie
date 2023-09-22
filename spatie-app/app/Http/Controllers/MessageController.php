@@ -5,14 +5,9 @@ namespace App\Http\Controllers;
 use App\Events\MessageEvent;
 use App\Http\Requests\Message\GetMessageRequest;
 use App\Http\Requests\Message\PostMessageRequest;
-use App\Models\Message;
-use App\Models\Team;
-use App\Models\TeamMember;
-use App\Models\User;
 use App\Services\MessageService;
 use App\Services\TeamMemberService;
 use App\Services\TeamService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
@@ -30,7 +25,10 @@ class MessageController extends Controller
 		$message = $messageService->postMessage($validated);
 
 		broadcast(new MessageEvent($message, $teamMember,))->toOthers();
-		return ['status' => 'Message Sent Successfully'];
+		return [
+			'status' => 'Message Sent Successfully',
+			'data' => $message
+		];
 	}
 
 	public function getLastMessages(GetMessageRequest $request, TeamService $teamService)
@@ -51,7 +49,8 @@ class MessageController extends Controller
 		$messages = DB::select($rawQuery);
 
 		return response()->json([
-			'messages' => $messages
+			'message' => 'success',
+			'data' => $messages
 		], 200);
 	}
 }

@@ -45,7 +45,7 @@ class TeamService
 	public function updateTeam($id, $data)
 	{
 		$team = Team::find($id);
-		$team = $team->update([
+		$team->update([
 			'name' => $data['name'],
 			'department_id' => $data['department_id'],
 			'teamlead_id' => $data['teamlead_id'],
@@ -57,9 +57,7 @@ class TeamService
 	public function deleteTeam($id)
 	{
 		$team = Team::find($id);
-		$team = $team->delete();
+		$team->delete();
 		return $team;
 	}
-
-
 }

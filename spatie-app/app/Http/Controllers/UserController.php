@@ -93,6 +93,7 @@ class UserController extends Controller
 		if ($user) {
 			return response()->json([
 				'message' => 'Successfully Deleted',
+				'data' => $user,
 			], 200);
 		}
 		return response()->json([
@@ -111,15 +112,10 @@ class UserController extends Controller
 
 		$validate = $request->validated();
 		$user = $userService->update($id, $validate);
-		
-		if ($user== $orgUser) {
-			return response()->json([
-				'message' => 'Nothing to update',
-			], 200);
-		}
 
 		return response()->json([
 			'message' => 'User Updated',
+			'data' => $user,
 		], 200);
 	}
 }

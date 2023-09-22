@@ -68,12 +68,11 @@ class UserService
 		if (isset($data['name'])) {
 			$user->name = $data['name'];
 		}
-	
+
 		if (isset($data['password'])) {
 			$user->password = $data['password'];
 		}
 		$user->save();
-
 		return $user;
 	}
 
@@ -81,6 +80,5 @@ class UserService
 	{
 		$user = User::find($id);
 		return $user;
-
 	}
 }

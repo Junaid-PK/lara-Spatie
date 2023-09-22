@@ -14,14 +14,12 @@ class TeamMemberService
 			'team_id' => $data['team_id'],
 			'user_id' => $data['user_id'],
 		]);
-
 		return $teamMember;
 	}
 
 	public function showTeam($team_id)
 	{
 		$teamMember = TeamMember::where('team_id', $team_id)->get();
-
 		return $teamMember;
 	}
 
@@ -37,7 +35,7 @@ class TeamMemberService
 	public function delete($id)
 	{
 		$teamMember = TeamMember::find($id);
-		$teamMember = $teamMember->delete();
+		$teamMember->delete();
 		return $teamMember;
 	}
 

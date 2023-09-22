@@ -65,11 +65,22 @@ class UserService
 	{
 		$user = User::find($id);
 
-		$user = $user->update([
-			'name' => $data['name'],
-			'email' => $data['email'],
-			'password' => $data['password']
-		]);
+		if (isset($data['name'])) {
+			$user->name = $data['name'];
+		}
+	
+		if (isset($data['password'])) {
+			$user->password = $data['password'];
+		}
+		$user->save();
+
 		return $user;
+	}
+
+	public function user_check($id)
+	{
+		$user = User::find($id);
+		return $user;
+
 	}
 }

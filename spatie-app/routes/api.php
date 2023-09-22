@@ -57,7 +57,6 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::delete('/teammembers/{id}', [TeamMemberController::class, 'deleteTeamMember'])->middleware('permission:can-update-member'); // Done
 
 
-
 	// Routes for DepartmentController
 	Route::post('/departments', [DepartmentController::class, 'postDepartments'])->middleware('permission:can-add-department');
 	Route::put('/departments/{id}', [DepartmentController::class, 'updateDepartments'])->middleware('permission:can-update-department');

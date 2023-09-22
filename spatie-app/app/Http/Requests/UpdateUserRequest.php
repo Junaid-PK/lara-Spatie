@@ -22,10 +22,9 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'confirm_password' => 'required|same:password',
+            'name' => 'sometimes|required', // 'name' is optional, but if provided, it must not be empty.
+            'password' => 'sometimes|required|min:8', // 'password' is optional, but if provided, it must not be empty and must be at least 8 characters long.
+            'confirm_password' => 'sometimes|required|same:password', // 'confirm_password' is optional, but if provided, it must not be empty and must match the 'password' field.
         ];
     }
 }

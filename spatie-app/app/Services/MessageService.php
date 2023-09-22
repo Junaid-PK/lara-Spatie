@@ -15,4 +15,4 @@ class MessageService
 		$message = Message::create($validated);
 		return $message;
 	}	
-}
+} 

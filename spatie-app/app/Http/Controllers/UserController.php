@@ -103,19 +103,21 @@ class UserController extends Controller
 
 	public function updateUser($id, UpdateUserRequest $request, UserService $userService)
 	{
-		$orgUser = $userService->user_check($id);
-		if (!$orgUser) {
+		try {
+			$validated = $request->validated();
+			if ($user = $userService->update($id, $validated)) {
+				return response()->json([
+					'message' => 'User Updated',
+					'data' => $user,
+				], 200);
+			}
 			return response()->json([
 				'message' => 'User not found',
 			], 404);
+		} catch (\Throwable $th) {
+			return response()->json([
+				'message' => 'Something went wrong',
+			], 500);
 		}
-
-		$validate = $request->validated();
-		$user = $userService->update($id, $validate);
-
-		return response()->json([
-			'message' => 'User Updated',
-			'data' => $user,
-		], 200);
 	}
 }

@@ -57,28 +57,66 @@ class UserService
 
 	public function delete($id)
 	{
-		$user = User::where('id', $id)->delete();
+		$user = User::where('id', $id);
+		$user->delete();
 		return $user;
 	}
 
 	public function update($id, array $data)
 	{
 		$user = User::find($id);
-
-		if (isset($data['name'])) {
-			$user->name = $data['name'];
+		if (!$user) {
+			return false;
 		}
 
-		if (isset($data['password'])) {
+		// we have teammembers table, check for the $data->teamIds array that contains the list of team ids of a user.
+		// if the $data->teamIds array is not empty, then we can update the teammembers table.
+		if (!empty($data['teamIds'])) {
+			\App\Models\Teammember::where('user_id', $id)->delete();
+			foreach ($data['teamIds'] as $teamId) {
+				\App\Models\Teammember::create([
+					'user_id' => $id,
+					'team_id' => $teamId,
+				]);
+			}
+		}
+
+		// update user department if the $data->department_id is not empty
+		if (!empty($data['department_id'])) {
+			// check if the department exists
+			if (\App\Models\Department::find($data['department_id'])) {
+				$user->department_id = $data['department_id'];
+			}
+		}
+
+		// permissions is list of permissions to assign to user. but first we need to check if the permissions exists
+		if (!empty($data['permissions'])) {
+			$permissions = [];
+			foreach ($data['permissions'] as $permission) {
+				if (\App\Models\Permission::find($permission)) {
+					$permissions[] = $permission;
+				}
+			}
+			$user->syncPermissions($permissions);
+		}
+
+		$user->name = $data['name'];
+
+		if (!empty($data['password'])) {
 			$user->password = $data['password'];
 		}
+
 		$user->save();
 		return $user;
 	}
 
 	public function user_check($id)
 	{
-		$user = User::find($id);
-		return $user;
+		try {
+			$user = User::find($id);
+			return $user;
+		} catch (\Throwable $th) {
+			return false;
+		}
 	}
 }

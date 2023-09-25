@@ -37,5 +37,30 @@ class UserSeeder extends Seeder
 		$user->givePermissionTo('can-update-department');
 		$user->givePermissionTo('can-delete-department');
 		$user->givePermissionTo('can-view-department');
+
+		\App\Models\User::factory(5)->create();
+
+		// create departments called Backend, Frontend, DevOps, Mobile and QA
+		foreach (['Backend', 'Frontend', 'DevOps', 'Mobile', 'QA'] as $department) {
+			\App\Models\Department::factory()->create([
+				'name' => $department,
+				'created_by_id' => 1,
+			]);
+		}
+
+		// create teams called BackendTeam, FrontendTeam, DevOpsTeam, MobileTeam and QATeam
+		foreach (['BackendTeam', 'FrontendTeam', 'DevOpsTeam', 'MobileTeam', 'QATeam'] as $team) {
+			\App\Models\Team::factory()->create([
+				'name' => $team,
+			]);
+		}
+
+		// create 5 users and assign them to BackendTeam and Backend department
+		$backendTeam = \App\Models\Team::where('name', 'BackendTeam')->first();
+		$backendDepartment = \App\Models\Department::where('name', 'Backend')->first();
+		foreach (\App\Models\User::factory(5)->create() as $user) {
+			$user->teams()->attach($backendTeam->id);
+			$user->departments()->attach($backendDepartment->id);
+		}
 	}
 }

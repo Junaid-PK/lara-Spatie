@@ -56,6 +56,7 @@ class TeamMemberController extends Controller
 
 	public function deleteTeamMember($id, TeamMemberService $teamMemberService)
 	{
+
 		$teamMember = $teamMemberService->delete($id);
 		if (!$teamMember) {
 			return response()->json([
